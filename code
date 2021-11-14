@@ -1,0 +1,377 @@
+import pandas as pd
+
+flow = pd.io.parsers.read_csv('jk_flow.csv', index_col = 0)
+
+# data1 = pd.io.parsers.read_csv('t1r0_ij.csv', index_col = 0)
+# data2 = pd.io.parsers.read_csv('t1r0_jk.csv', index_col = 0)
+
+# data1 = pd.io.parsers.read_csv('t0.25r0.75_ij.csv', index_col = 0)
+# data2 = pd.io.parsers.read_csv('t0.25r0.75_jk.csv', index_col = 0)
+
+data1 = pd.io.parsers.read_csv('t0.5r0.5_ij.csv', index_col = 0)
+data2 = pd.io.parsers.read_csv('t0.5r0.5_jk.csv', index_col = 0)
+
+# data1 = pd.io.parsers.read_csv('t0.75r0.25_ij.csv', index_col = 0)
+# data2 = pd.io.parsers.read_csv('t0.75r0.25_jk.csv', index_col = 0)
+
+# data1 = pd.io.parsers.read_csv('t0r1_ij.csv', index_col = 0)
+# data2 = pd.io.parsers.read_csv('t0r1_jk.csv', index_col = 0)
+
+# data3 = pd.io.parsers.read_csv('1025jk.csv', index_col = 0)
+
+#設定各層級的名稱
+supplier = data1.index[0:4]
+dc = data2.index[0:7]
+# dc = ['五股','板橋第一']
+# point = data2.columns[0:461]#list(range(1,462))
+point = list(range(1,462))
+for i in range(0,461):
+    a = str(point[i])
+    point[i] = a
+capa = {'五股':76855, '板橋第一':65200, '板橋第二':44800, '三重':81600, '泰山':31200, '新莊':338000, '樹林':43735}
+# fc = {'五股':0.286, '板橋第一':0.286, '板橋第二':0.143, '三重':0, '泰山':0.143, '新莊':1, '樹林':0.5}
+# vc = {'五股':0, '板橋第一':1, '板橋第二':0.635, '三重':0.384, '泰山':0.087, '新莊':0.349, '樹林':0.185}
+
+print(supplier)
+print(dc)
+print(point)
+print(capa)
+
+need2 = {}
+
+for k in range(len(flow.columns)):
+     for j in range(0,7):
+            for l in range(1,4):
+                for s in range(1,6):
+                    need2.update({(flow.index[j],flow.columns[k],l,s):(1/s)*flow.iat[j,k]})
+                    
+need = {}
+
+for k in range(len(flow.columns)):
+                for s in range(1,6):
+                    need.update({(flow.columns[k],s):(1/s)*flow.iat[j,k]})
+
+####  i to j ####
+dist = {}
+
+for i in range(len(data1.columns)):
+     for j in range(0,4):
+        dist.update({(data1.index[j],data1.columns[i],1,1):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(4,8):
+        dist.update({(data1.index[j],data1.columns[i],2,1):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(8,12):
+        dist.update({(data1.index[j],data1.columns[i],3,1):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(12,16):
+        dist.update({(data1.index[j],data1.columns[i],1,2):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(16,20):
+        dist.update({(data1.index[j],data1.columns[i],2,2):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(20,24):
+        dist.update({(data1.index[j],data1.columns[i],3,2):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(24,28):
+        dist.update({(data1.index[j],data1.columns[i],1,3):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(28,32):
+        dist.update({(data1.index[j],data1.columns[i],2,3):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(32,36):
+        dist.update({(data1.index[j],data1.columns[i],3,3):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(36,40):
+        dist.update({(data1.index[j],data1.columns[i],1,4):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(40,44):
+        dist.update({(data1.index[j],data1.columns[i],2,4):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(44,48):
+        dist.update({(data1.index[j],data1.columns[i],3,4):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(48,52):
+        dist.update({(data1.index[j],data1.columns[i],1,5):data1.iat[j,i]})
+
+for i in range(len(data1.columns)):
+     for j in range(52,56):
+        dist.update({(data1.index[j],data1.columns[i],2,5):data1.iat[j,i]})
+        
+for i in range(len(data1.columns)):
+     for j in range(56,60):
+        dist.update({(data1.index[j],data1.columns[i],3,5):data1.iat[j,i]})
+        
+#### j to k ####
+#情境一
+dist_s = {}
+
+for i in range(len(data2.columns)):
+     for j in range(0,7):
+        dist_s.update({(data2.index[j],data2.columns[i],1,1):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(7,14):
+        dist_s.update({(data2.index[j],data2.columns[i],2,1):data2.iat[j,i]})
+        
+for i in range(len(data2.columns)):
+     for j in range(14,21):
+        dist_s.update({(data2.index[j],data2.columns[i],3,1):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(21,28):
+        dist_s.update({(data2.index[j],data2.columns[i],1,2):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(28,35):
+        dist_s.update({(data2.index[j],data2.columns[i],2,2):data2.iat[j,i]})
+        
+for i in range(len(data2.columns)):
+     for j in range(35,42):
+        dist_s.update({(data2.index[j],data2.columns[i],3,2):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(42,49):
+        dist_s.update({(data2.index[j],data2.columns[i],1,3):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(49,56):
+        dist_s.update({(data2.index[j],data2.columns[i],2,3):data2.iat[j,i]})
+        
+for i in range(len(data2.columns)):
+     for j in range(56,63):
+        dist_s.update({(data2.index[j],data2.columns[i],3,3):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(63,70):
+        dist_s.update({(data2.index[j],data2.columns[i],1,4):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(70,77):
+        dist_s.update({(data2.index[j],data2.columns[i],2,4):data2.iat[j,i]})
+        
+for i in range(len(data2.columns)):
+     for j in range(77,84):
+        dist_s.update({(data2.index[j],data2.columns[i],3,4):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(84,91):
+        dist_s.update({(data2.index[j],data2.columns[i],1,5):data2.iat[j,i]})
+
+for i in range(len(data2.columns)):
+     for j in range(91,98):
+        dist_s.update({(data2.index[j],data2.columns[i],2,5):data2.iat[j,i]})
+        
+for i in range(len(data2.columns)):
+     for j in range(98,105):
+        dist_s.update({(data2.index[j],data2.columns[i],3,5):data2.iat[j,i]})
+        
+
+
+#給t0.5r0.5調整用        
+for i in supplier:
+    for j in dc:
+        for l in 1,2,3:
+            for s in 1,2,3,4,5:
+                dist.update({(i,j,l,s):1/2*(dist.get((i,j,l,s)))})
+
+for k in point:
+    for j in dc:
+        for l in 1,2,3:
+            for s in 1,2,3,4,5:
+                dist_s.update({(j,k,l,s):1/2*(dist_s.get((j,k,l,s)))})
+
+# 孤島查詢
+
+lone1=[]
+s = 0
+
+
+
+for k in point:
+    s=0
+    for j in dc:
+        for l in range(1,4):
+            s = s + dist_s[j,k,l,5]
+    if s == 2099979/2:
+        lone1.append(k)
+print(lone1)
+
+point.remove(lone1)
+
+import datetime
+from gurobipy import *
+
+arcs = tuplelist(dist_s.keys())
+arcs_ij = tuplelist(dist.keys())
+
+def find(p):
+    start = datetime.datetime.now()
+    # create optimization model
+    m = Model('p-center')
+    m.Params.LogToConsole = 0 ##不要顯示結果
+
+    # create decision variables
+    connect = {}
+    for j,k,l,s in arcs:
+        connect[j,k,l,s] = m.addVar(ub=1, lb=0, vtype=GRB.BINARY, name='connect_%s_%s_%s_%s' % (j, k, l, s))
+
+
+    connect_ij = {}
+    for i,j,l,s in arcs_ij:
+        connect_ij[i,j,l,s] = m.addVar(ub=1, lb=0, vtype=GRB.BINARY, name='connect_ij_%s_%s_%s_%s' % (i, j, l, s))
+
+    decision = {}
+    for j in dc:
+        decision[j] = m.addVar(ub=1, lb=0, vtype=GRB.BINARY, name='decision_%s' % (j))
+
+    relief = {}
+    for j in dc:
+        relief[j] = m.addVar(ub=GRB.INFINITY, lb=0, vtype=GRB.CONTINUOUS, name='relief_%s' % (j))
+
+    flow_jk = {}
+    for k in point:
+         for j in dc:
+            for l in range(1,4):
+                for s in range(1,6):
+                    flow_jk[j,k,l,s] = m.addVar(ub=GRB.INFINITY, lb=0, vtype=GRB.CONTINUOUS, name='flow_jk_%s_%s_%s_%s' % (j, k, l, s))
+
+    z1 = {}
+    z1 = m.addVar(ub=GRB.INFINITY, lb=0, vtype=GRB.CONTINUOUS, name='z1')
+
+    z2 = {}
+    z2 = m.addVar(ub=GRB.INFINITY, lb=0, vtype=GRB.CONTINUOUS, name='z2')
+
+
+
+
+    # update the model
+    m.update()    
+
+    # # set objective for p-center
+    # m.setObjective(z1+z2, GRB.MINIMIZE)
+
+    # set objective for p-centdian & p-median
+    m.setObjective( 0.2*((quicksum(quicksum(quicksum(dist[i,j,l,1]*connect_ij[i,j,l,1] for l in range(1,4)) for j in dc) for i in supplier))
+                        +(quicksum(quicksum(quicksum(dist_s[j,k,l,1]*connect[j,k,l,1] for l in range(1,4)) for j in dc) for k in point)))
+                  + 0.2*((quicksum(quicksum(quicksum(dist[i,j,l,2]*connect_ij[i,j,l,2] for l in range(1,4)) for j in dc) for i in supplier))
+                        +(quicksum(quicksum(quicksum(dist_s[j,k,l,2]*connect[j,k,l,2] for l in range(1,4)) for j in dc) for k in point)))
+                  + 0.2*((quicksum(quicksum(quicksum(dist[i,j,l,3]*connect_ij[i,j,l,3] for l in range(1,4)) for j in dc) for i in supplier))
+                        +(quicksum(quicksum(quicksum(dist_s[j,k,l,3]*connect[j,k,l,3] for l in range(1,4)) for j in dc) for k in point)))
+                  + 0.2*((quicksum(quicksum(quicksum(dist[i,j,l,4]*connect_ij[i,j,l,4] for l in range(1,4)) for j in dc) for i in supplier))
+                        +(quicksum(quicksum(quicksum(dist_s[j,k,l,4]*connect[j,k,l,4] for l in range(1,4)) for j in dc) for k in point)))
+                  + 0.2*((quicksum(quicksum(quicksum(dist[i,j,l,5]*connect_ij[i,j,l,5] for l in range(1,4)) for j in dc) for i in supplier))
+                        +(quicksum(quicksum(quicksum(dist_s[j,k,l,5]*connect[j,k,l,5] for l in range(1,4)) for j in dc) for k in point)))
+                  + z1+z2 , GRB.MINIMIZE)
+
+    #                   + quicksum(fc[j]*decision[j] for j in dc)
+    #                   + quicksum(vc[j]*relief[j]*decision[j] for j in dc) , GRB.MINIMIZE)
+
+
+
+    # set constraints
+    for k in point:
+        m.addConstr(z2 >= 0.2*(quicksum(quicksum(dist_s[j,k,l,1]*connect[j,k,l,1] for l in range(1,4)) for j in dc))
+                        + 0.2*(quicksum(quicksum(dist_s[j,k,l,2]*connect[j,k,l,2] for l in range(1,4)) for j in dc))
+                        + 0.2*(quicksum(quicksum(dist_s[j,k,l,3]*connect[j,k,l,3] for l in range(1,4)) for j in dc))
+                        + 0.2*(quicksum(quicksum(dist_s[j,k,l,4]*connect[j,k,l,4] for l in range(1,4)) for j in dc))
+                        + 0.2*(quicksum(quicksum(dist_s[j,k,l,5]*connect[j,k,l,5] for l in range(1,4)) for j in dc)), 'c5')
+
+    for j in dc:
+        m.addConstr(z1 >= 0.2*(quicksum(quicksum(dist[i,j,l,1]*connect_ij[i,j,l,1] for l in range(1,4)) for i in supplier))
+                        + 0.2*(quicksum(quicksum(dist[i,j,l,2]*connect_ij[i,j,l,2] for l in range(1,4)) for i in supplier))
+                        + 0.2*(quicksum(quicksum(dist[i,j,l,3]*connect_ij[i,j,l,3] for l in range(1,4)) for i in supplier))
+                        + 0.2*(quicksum(quicksum(dist[i,j,l,4]*connect_ij[i,j,l,4] for l in range(1,4)) for i in supplier))
+                        + 0.2*(quicksum(quicksum(dist[i,j,l,5]*connect_ij[i,j,l,5] for l in range(1,4)) for i in supplier)), 'c4')    
+
+    for j in dc:
+        for s in range(1,6):
+            m.addConstr(quicksum(quicksum(connect_ij[i,j,l,s] for i in supplier) for l in range(1,4)) == decision[j], 'c6') 
+
+    for k in point:
+        for s in range(1,6):
+            m.addConstr(quicksum(quicksum(connect[j,k,l,s] for j in dc) for l in range(1,4)) == 1, 'c7')
+
+    for j in dc:
+        for k in point:
+            for l in range(1,4):
+                for s in range(1,6):
+                    m.addConstr(connect[j,k,l,s] <= decision[j], 'c8')
+
+    for j in dc:
+        for i in supplier:
+            for l in range(1,4):
+                for s in range(1,6):
+                    m.addConstr(connect_ij[i,j,l,s] <= decision[j], 'c9')
+
+    for j in dc:
+        for k in point:
+            for l in range(1,4):
+                for s in range(1,6):
+                    m.addConstr(flow_jk[j,k,l,s] <= need2[j,k,l,s]*connect[j,k,l,s], 'c10')
+
+    m.addConstr(quicksum(decision[j] for j in dc) == p, 'c9' ) # p=2
+
+    for k in point:
+        for s in range(1,6):
+            m.addConstr(quicksum(quicksum(flow_jk[j,k,l,s] for j in dc) for l in range(1,4)) >= need[k,s], 'c11')
+
+
+    for j in dc:
+        for s in range(1,6):
+            m.addConstr((quicksum(quicksum((flow_jk[j,k,l,s]) for k in point) for l in range(1,4)))
+                    <= relief[j], 'c12')
+
+    for j in dc:
+        m.addConstr(relief[j]<= capa[j]*decision[j], 'c13')
+
+
+    # optimization
+    m.optimize()
+
+    end = datetime.datetime.now()
+    print("執行時間：", end - start)   
+    # solution
+    print("\n目標值", m.objVal)
+
+    solution = m.getAttr('x', decision)
+    for j in dc:
+        if solution[j] > 0:
+            print('dc :',j)
+
+    print('i至j最遠期望成本為:',z1.x,'j至k最遠期望成本為:',z2.x)
+    print(' ')
+#     print('各中心承載量')
+#     for j in dc:
+#         print(j,abs(relief[j].x))
+
+    open_j = []
+    # count = 0 
+    for i in decision.keys():
+        if (abs(decision[i].x) > 1e-6):
+            open_j.extend([i])
+
+    print('物資發送站至調度中心之指派結果')
+    for o,d,l,s in connect_ij.keys():
+        if (abs(connect_ij[o,d,l,s].x) > 1e-6):
+            print('情境',s,'路徑',l,",",o,">",d,dist[o,d,l,s])   
+    print(' ')
+    print('調度中心至分站之指派結果')
+    for o,d,l,s in connect.keys():
+        if (abs(connect[o,d,l,s].x) > 1e-6) and d not in open_j:
+            print('情境',s,'路徑',l,",",o,">",d,dist_s[o,d,l,s])
+           
+           
+    find(2)
